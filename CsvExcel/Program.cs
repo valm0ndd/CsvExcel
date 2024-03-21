@@ -88,6 +88,34 @@ namespace CSVToExcelConverter
 
             Console.WriteLine("Press Enter to exit...");
             Console.ReadLine();
+
+            foreach (string fileOrDirPath in Directory.EnumerateFileSystemEntries(inputFile))
+            {
+                string destinationPath = Path.Combine(outputFile, Path.GetFileName(fileOrDirPath));
+                if (Directory.Exists(fileOrDirPath))
+                {
+                    string newDirectoryPath = Path.Combine(outputFile, Path.GetFileName(fileOrDirPath));
+                    Directory.CreateDirectory(newDirectoryPath);
+                    foreach (string filePath in Directory.EnumerateFiles(fileOrDirPath))
+                    {
+                        string fileName = Path.GetFileName(filePath);
+                        string destinationFilePath = Path.Combine(newDirectoryPath, fileName);
+                        if (!File.Exists(destinationFilePath)) // Check if file already exists
+                        {
+                            File.Copy(filePath, destinationFilePath, true); // Set overwrite to true if needed
+                        }
+                    }
+                }
+                else
+                {
+                    if (!File.Exists(destinationPath)) // Check if file already exists
+                    {
+                        File.Copy(fileOrDirPath, destinationPath, true); // Set overwrite to true if needed
+                    }
+                }
+            }
+
+
         }
     }
 }
